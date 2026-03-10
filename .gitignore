@@ -25,6 +25,9 @@ lecture_analysis/analysis_data/
 lecture_analysis/analysis_folder1.json
 lecture_analysis/analysis_folder2.json
 lecture_analysis/global_conflicts.json
+lecture_analysis/decisions.json
+lecture_analysis/ui/src/lib/check_tags.cjs
+lecture_analysis/ui/src/lib/components/audio-optimizer/FileRow.svelte.bak
 ui/dist/
 .svelte-kit/
 build/
