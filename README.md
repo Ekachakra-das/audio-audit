@@ -8,6 +8,14 @@ Open your own folder with audio files, scan it, and process recordings with one 
 
 Practical tip: for lecture recordings, `Resemble` has usually given the best noise reduction results in real project usage.
 
+You can open any file in the Audio Lab, generate a short model preview (for example, a 30-second segment), and listen in A/B style against the original. After that, you can apply the selected model/settings to that single file or to many files in batch mode.
+
+## System Requirements (Short)
+
+- Recommended machine: modern MacBook (Apple Silicon preferred), 16 GB RAM or more.
+- Tested on macbook pro m1.
+- Disk space after full setup (Python envs, Node modules, and model files): about **2-3 GB**.
+
 ## Features
 - Audio cleanup with `VoiceFixer`, `Resemble-Enhance`, `DeepFilter`, `Denoiser`, `Remove Echo`, and `LavaSR`
 - Audio Enhancement Lab popup with preview, A/B comparison, and per-model controls
