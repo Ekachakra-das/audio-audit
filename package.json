@@ -1,0 +1,12 @@
+{
+    "name": "prabhupada-audit-root",
+    "version": "1.0.0",
+    "description": "Root scripts",
+    "scripts": {
+        "start": "./audit.command",
+        "start-lab": "./lab.command",
+        "commit": "git add . && git commit -m \"$(date '+%Y-%m-%d %H:%M:%S')\""
+    },
+    "author": "",
+    "license": "ISC"
+}

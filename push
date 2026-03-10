@@ -1,0 +1,12 @@
+#!/bin/bash
+git add -A
+if git commit -m "$(date '+%Y-%m-%d %H:%M:%S')"; then
+    # Try push, if fails due to upstream, set it automatically
+    if ! git push; then
+        echo "🚀 Setting upstream branch and pushing..."
+        current_branch=$(git branch --show-current)
+        git push --set-upstream origin "$current_branch"
+    fi
+else
+    echo "Nothing to commit in the root repository."
+fi

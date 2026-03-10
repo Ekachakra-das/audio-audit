@@ -1,0 +1,41 @@
+# Audio Data & Catalogs
+Prabhupada Vani/
+
+# Dependencies & Environments
+node_modules/
+venv/
+venv_vf2/
+ui/node_modules/
+__pycache__/
+*.py[cod]
+
+# Temporary & Build Files
+temp/
+_TRASH/
+*.mp3
+*.wav
+*.wav.json
+lecture_analysis/bridge_debug.log
+lecture_analysis/debug_clean.log
+lecture_analysis/bridge.log
+lecture_analysis/scan.log
+lecture_analysis/server.log
+lecture_analysis/index.html
+lecture_analysis/analysis_data/
+lecture_analysis/analysis_folder1.json
+lecture_analysis/analysis_folder2.json
+lecture_analysis/global_conflicts.json
+ui/dist/
+.svelte-kit/
+build/
+
+# OS Files
+.DS_Store
+lecture_analysis/.DS_Store
+AGENT.md
+agent.md
+
+# Restoration files (Keep these!)
+!requirements.txt
+!requirements_vf2.txt
+!RESTORE.md

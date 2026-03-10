@@ -1,0 +1,33 @@
+# Python
+venv/
+venv_vf2/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Node / JS
+node_modules/
+dist/
+.svelte-kit/
+build/
+
+# Audio / Temp
+temp/
+_TRASH/
+*.mp3
+*.wav
+*.wav.json
+bridge_debug.log
+debug_clean.log
+bridge.log
+scan.log
+server.log
+
+# System
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Analysis Data (Optional: if it's too big, ignore it too)
+# analysis_data/
