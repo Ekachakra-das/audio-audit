@@ -2,16 +2,18 @@
 
 Audio restoration and analysis tooling. The app combines a Svelte popup UI, a Node bridge server, and multiple Python workers for cleanup, comparison, duplicate checks, and batch export.
 
+## What This Project Does (Short)
+
+Open your own folder with audio files, scan it, and process recordings with one of the built-in cleanup methods (`Resemble`, `VoiceFixer`, `LavaSR`, `DeepFilter`, `Denoiser`, `Remove Echo`). You can run single-file cleanup, compare versions, and launch batch optimization for many files.
+
+Practical tip: for lecture recordings, `Resemble` has usually given the best noise reduction results in real project usage.
+
 ## Features
 - Audio cleanup with `VoiceFixer`, `Resemble-Enhance`, `DeepFilter`, `Denoiser`, `Remove Echo`, and `LavaSR`
 - Audio Enhancement Lab popup with preview, A/B comparison, and per-model controls
 - Batch optimization with bitrate recommendations
 - Duplicate detection across lecture folders
 - Finder / Audacity / RX integration from the desktop workflow 
-
-## Practical Recommendation
-
-- Based on hands-on project usage, the `Resemble` pipeline has generally delivered the best results for noise reduction in recordings.
 
 ## Setup
 
