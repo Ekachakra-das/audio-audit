@@ -7,7 +7,7 @@ Audio restoration and analysis tooling. The app combines a Svelte popup UI, a No
 - Audio Enhancement Lab popup with preview, A/B comparison, and per-model controls
 - Batch optimization with bitrate recommendations
 - Duplicate detection across lecture folders
-- Finder / Audacity / RX integration from the desktop workflow
+- Finder / Audacity / RX integration from the desktop workflow 
 
 ## Practical Recommendation
 
