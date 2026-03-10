@@ -72,6 +72,9 @@
             (f) => f.status === "queued" || f.status === "converting",
         ).length,
     );
+    let queuedFiles = $derived(
+        files.filter((f) => f.status === "queued").slice(0, 5),
+    );
     let effectiveTotalFiles = $derived(
         batchTotalFiles > 0
             ? batchTotalFiles
@@ -263,6 +266,24 @@
                                 </span>
                             {/if}
                         </div>
+
+                        {#if queuedFiles.length > 0}
+                            <div class="max-w-3xl mx-auto pt-3">
+                                <div class="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-2">
+                                    Queue ({queuedFiles.length} waiting)
+                                </div>
+                                <div class="flex flex-wrap items-center justify-center gap-2">
+                                    {#each queuedFiles as queued (queued.path || queued.name)}
+                                        <span
+                                            class="max-w-[260px] truncate px-3 py-1.5 rounded-full border border-white/15 bg-white/5 text-[11px] font-bold text-white/70"
+                                            title={queued.name}
+                                        >
+                                            {queued.name}
+                                        </span>
+                                    {/each}
+                                </div>
+                            </div>
+                        {/if}
 
                         <div
                             class="flex items-center justify-center gap-8 pt-4"

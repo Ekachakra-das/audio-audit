@@ -401,41 +401,51 @@
         }
         if (files.length === 0) return;
 
-        const target = files[0];
+        const demoBatchSize = Math.min(5, files.length);
+        const demoQueuePaths = files
+            .slice(0, demoBatchSize)
+            .map((file) => file.path);
+        const target = files.find((file) => file.path === demoQueuePaths[0]);
+        if (!target) return;
+
         files = files.map((file, idx) => ({
             ...file,
             status:
                 idx === 0
                     ? "converting"
-                    : file.hasCleaned || file.finalPath
-                      ? "completed"
-                      : "analyzed",
-            progress: idx === 0 ? 0 : file.progress || 0,
-            progressTarget: idx === 0 ? 0 : file.progressTarget || 0,
+                    : idx < demoBatchSize
+                      ? "queued"
+                      : file.hasCleaned || file.finalPath
+                        ? "completed"
+                        : "analyzed",
+            progress: idx < demoBatchSize ? 0 : file.progress || 0,
+            progressTarget: idx < demoBatchSize ? 0 : file.progressTarget || 0,
         }));
 
         batchStartTime = Date.now();
         totalProcessedDuration = 0;
         totalProcessTime = 0;
         batchProcessedCount = 0;
-        batchTotalFiles = 1;
-        batchETA = 60;
+        batchTotalFiles = demoBatchSize;
+        batchETA = demoBatchSize * 60;
         batchProcessingSpeed = 0;
         cpuTemp = 68;
         cpuUsage = 42;
         activeQueueTaskPath = target.path;
         isProcessingQueue = true;
-        conversionQueue = [
-            {
-                filePath: target.path,
-                sampleOrBitrate: null,
-                customInputPath: null,
-                allowReprocess: false,
-            },
-        ];
+        conversionQueue = demoQueuePaths.map((filePath) => ({
+            filePath,
+            sampleOrBitrate: null,
+            customInputPath: null,
+            allowReprocess: false,
+        }));
         showBatchSettingsModal = false;
         isFocusMode = true;
-        showTransientToast("Batch optimization demo started.", "info", 1400);
+        showTransientToast(
+            `Batch optimization demo started (1/${demoBatchSize}).`,
+            "info",
+            1500,
+        );
 
         const cycleMs = 60_000;
         const cycleStart = Date.now();
@@ -447,20 +457,27 @@
             const ratio = Math.min(0.99, elapsed / cycleMs);
             const progress = Math.floor(ratio * 100);
 
-            files = files.map((file) =>
-                file.path === target.path
-                    ? {
-                          ...file,
-                          status: "converting",
-                          progress,
-                          progressTarget: progress,
-                      }
-                    : file,
-            );
+            files = files.map((file) => {
+                if (!demoQueuePaths.includes(file.path)) return file;
+                if (file.path !== target.path) {
+                    return {
+                        ...file,
+                        status: "queued",
+                        progress: 0,
+                        progressTarget: 0,
+                    };
+                }
+                return {
+                    ...file,
+                    status: "converting",
+                    progress,
+                    progressTarget: progress,
+                };
+            });
 
             const elapsedSec = Math.max(1, Math.floor(elapsed / 1000));
             const durationSec = Number(target.duration) || 600;
-            batchETA = Math.max(5, Math.ceil((1 - ratio) * 60));
+            batchETA = Math.max(20, Math.ceil((1 - ratio) * cycleMs / 1000));
             batchProcessingSpeed = Number(
                 (Math.min(durationSec, elapsedSec) / elapsedSec).toFixed(2),
             );
@@ -898,12 +915,6 @@
     let rememberScroll = $state(
         localStorage.getItem("audit-remember-scroll") === "true",
     );
-    let disableAutoReload = $state(
-        localStorage.getItem("audit-disable-auto-reload") === "true",
-    );
-    let disableAutoScan = $state(
-        localStorage.getItem("optimizer-disable-auto-scan") === "true",
-    );
     let showBatchSettingsModal = $state(false);
     /** @type {"selected" | "all"} */
     let batchTargetMode = $state("selected");
@@ -945,31 +956,6 @@
     });
     $effect(() => {
         localStorage.setItem("audit-remember-scroll", String(rememberScroll));
-    });
-    $effect(() => {
-        localStorage.setItem(
-            "audit-disable-auto-reload",
-            String(disableAutoReload),
-        );
-    });
-    $effect(() => {
-        const handleBeforeUnload = (e) => {
-            e.preventDefault();
-            e.returnValue = "";
-            return "";
-        };
-
-        if (disableAutoReload) {
-            window.addEventListener("beforeunload", handleBeforeUnload, {
-                capture: true,
-            });
-        }
-
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload, {
-                capture: true,
-            });
-        };
     });
     $effect(() => {
         localStorage.setItem(
@@ -1703,7 +1689,7 @@
             if (files.length === 0) {
                 loadDemoFiles();
             }
-        } else if (folderPath && !disableAutoScan) {
+        } else if (folderPath) {
             waitForBridgeReady(25000).then((ready) => {
                 if (ready && isLiveOptimizerInstance()) {
                     scanFolder();
@@ -4251,44 +4237,6 @@
                                     <input
                                         type="checkbox"
                                         bind:checked={rememberScroll}
-                                        class="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                    />
-                                </label>
-
-                                <label
-                                    class="flex items-center justify-between cursor-pointer group"
-                                >
-                                    <div class="flex flex-col">
-                                        <span
-                                            class="text-[11px] font-bold text-slate-700 dark:text-slate-300 group-hover:text-blue-500 transition-colors"
-                                            >Prevent Auto Reload</span
-                                        >
-                                        <span class="text-[9px] text-slate-400"
-                                            >Warn before accidental page close/reload</span
-                                        >
-                                    </div>
-                                    <input
-                                        type="checkbox"
-                                        bind:checked={disableAutoReload}
-                                        class="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                    />
-                                </label>
-
-                                <label
-                                    class="flex items-center justify-between cursor-pointer group"
-                                >
-                                    <div class="flex flex-col">
-                                        <span
-                                            class="text-[11px] font-bold text-slate-700 dark:text-slate-300 group-hover:text-blue-500 transition-colors"
-                                            >Disable Auto-Scan</span
-                                        >
-                                        <span class="text-[9px] text-slate-400"
-                                            >Don't scan folder on startup</span
-                                        >
-                                    </div>
-                                    <input
-                                        type="checkbox"
-                                        bind:checked={disableAutoScan}
                                         class="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                     />
                                 </label>
